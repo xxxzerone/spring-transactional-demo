@@ -2,25 +2,34 @@ spring:
     application:
         name: demo
     
-    datasource:
+    datasource:        
         driver-class-name: org.h2.Driver
         url: jdbc:h2:mem:testdb;MODE=MySQL
         username: sa
         password:
+        hikari:
+            auto-commit: false
     
     jpa:
         hibernate:
             ddl-auto: update
+        show-sql: false            
         properties:
-            hibernate:                
+            hibernate:
+                connection:
+                    provider_disables_autocommit: true
                 highlight_sql: true
 
 logging:
-    level:
+    level:        
         org:
             springframework:
                 # orm.jpa.JpaTransactionManager: trace
                 transaction:
-                    interceptor: trace
+                    interceptor: TRACE
                 orm:
-                    jpa: debug
+                    jpa: DEBUG
+            hibernate:
+                SQL: DEBUG
+                orm.jdbc.bind: TRACE
+        com.zaxxer.hikari: DEBUG

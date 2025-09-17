@@ -22,7 +22,11 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> join(@RequestBody RequestJoin requestJoin) {
         log.info("UserController.join requestJoin: {}", requestJoin);
-        userService.join(requestJoin);
+        try {
+            userService.join(requestJoin);
+        } catch (InterruptedException e) {            
+            e.printStackTrace();
+        }
         return ResponseEntity.ok().build();
     }
     
