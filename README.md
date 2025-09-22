@@ -249,16 +249,21 @@ sequenceDiagram
     participant Controller
     participant UserServiceProxy as UserService (프록시)
     participant UserService as UserService (실제 인스턴스)
+    participant AuditServiceProxy as AuditService (프록시)
 
     Controller->>UserServiceProxy: join()
     activate UserServiceProxy
     Note right of UserServiceProxy: AOP 적용됨 (@Transactional)
     UserServiceProxy->>UserService: join()
     activate UserService
-    UserService->>UserServiceProxy: persistAuditLog()
+
+    Note right of UserService: 외부 Bean 호출 → AOP 적용 가능
+    UserService->>AuditServiceProxy: persistAuditLog()
+    activate AuditServiceProxy
+    Note right of AuditServiceProxy: AOP 적용됨 (@Transactional(REQUIRES_NEW))
+    deactivate AuditServiceProxy
+
     deactivate UserService
-    Note right of UserServiceProxy: AOP 적용됨 (@Transactional(REQUIRES_NEW))
-    UserServiceProxy->>UserService: persistAuditLog()
     deactivate UserServiceProxy
 ```
 ##### ❌ AOP 적용 안 되는 경우 (내부 호출)
